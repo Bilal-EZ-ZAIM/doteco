@@ -38,11 +38,6 @@ jobs:
         icacls "C:\inetpub\wwwroot\ecomerce\*" /grant "Everyone:F" /T
       shell: powershell
 
-    - name: 🧹 Remove old files from IIS folder
-      run: |
-        Remove-Item "C:\inetpub\wwwroot\ecomerce\*" -Recurse -Force
-      shell: powershell
-
     - name: 🚀 Deploy to IIS folder (safe & fast)
       run: robocopy ./publish "C:\inetpub\wwwroot\ecomerce" /E /XO /XN /XX /NJH /NJS /NP
       shell: cmd
