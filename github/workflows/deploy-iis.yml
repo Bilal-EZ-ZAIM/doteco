@@ -1,0 +1,29 @@
+name: Build and Deploy ASP.NET Core to IIS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+
+    steps:
+    - name: ✅ Checkout repository
+      uses: actions/checkout@v4
+
+    - name: 🔧 Restore dependencies
+      run: dotnet restore
+
+    - name: 🛠️ Build solution
+      run: dotnet build --configuration Release
+
+    - name: 📦 Publish project
+      run: dotnet publish -c Release -o ./publish
+
+    - name: 🚀 Deploy to IIS folder
+      run: robocopy ./publish "C:\inetpub\wwwroot\ecomerce" /MIR /NJH /NJS /NP
+
+    - name: 🔁 Restart IIS
+      run: iisreset
