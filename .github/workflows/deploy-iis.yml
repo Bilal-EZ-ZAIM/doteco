@@ -32,19 +32,22 @@ jobs:
         Stop-Website -Name "ecomerce"
       shell: powershell
 
+    - name: 🛠️ Take ownership and set permissions
+      run: |
+        $folder = "C:\inetpub\wwwroot\ecomerce"
+        takeown /f "$folder\*" /r /d y
+        icacls "$folder" /grant "Everyone:(OI)(CI)F" /T /Q
+        icacls "$folder\*" /grant "Everyone:F" /T /Q
+      shell: powershell
+
     - name: 🧹 Clean IIS deploy folder
       run: |
-        Remove-Item -Path "C:\inetpub\wwwroot\ecomerce\*" -Recurse -Force
+        Get-ChildItem -Path "C:\inetpub\wwwroot\ecomerce" -Recurse | Remove-Item -Force -Recurse
       shell: powershell
 
-    - name: 🛠️ Take ownership of IIS files
+    - name: 🚀 Deploy to IIS folder
       run: |
-        takeown /f "C:\inetpub\wwwroot\ecomerce\*" /r /d y
-        icacls "C:\inetpub\wwwroot\ecomerce\*" /grant "Everyone:F" /T
-      shell: powershell
-
-    - name: 🚀 Deploy to IIS folder (safe & fast)
-      run: robocopy ./publish "C:\inetpub\wwwroot\ecomerce" /E /XO /XN /XX /NJH /NJS /NP
+        xcopy ".\publish\*" "C:\inetpub\wwwroot\ecomerce\" /Y /E /I
       shell: cmd
 
     - name: ▶️ Start IIS site
