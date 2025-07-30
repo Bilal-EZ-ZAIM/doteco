@@ -41,7 +41,7 @@ jobs:
     - name: 🧹 Take ownership and clean old files
       run: |
         takeown /f "C:\inetpub\wwwroot\ecomerce" /r /d y
-        icacls "C:\inetpub\wwwroot\ecomerce" /grant "%USERNAME%:F" /t
+        icacls "C:\inetpub\wwwroot\ecomerce" /grant "bilanox\bilanox:F" /t
         Get-ChildItem -Path "C:\inetpub\wwwroot\ecomerce" -Recurse | Remove-Item -Recurse -Force
       shell: powershell
 
