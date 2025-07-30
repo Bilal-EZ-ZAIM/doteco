@@ -31,15 +31,16 @@ jobs:
         Import-Module WebAdministration
         Stop-Website -Name "ecomerce"
       shell: powershell
-    - name: 🛠️ Grant permissions to IIS folder
+
+    - name: 🛠️ Take ownership of files
       run: |
-          icacls "C:\inetpub\wwwroot\ecomerce" /grant "Everyone:(OI)(CI)F" /T
+        takeown /f "C:\inetpub\wwwroot\ecomerce\*" /r /d y
+        icacls "C:\inetpub\wwwroot\ecomerce\*" /grant "Everyone:F" /T
       shell: powershell
-      
 
     - name: 🧹 Remove old files from IIS folder
       run: |
-        Remove-Item "C:\inetpub\wwwroot\ecomerce\*" -Recurse -Force  # حذف جميع الملفات القديمة
+        Remove-Item "C:\inetpub\wwwroot\ecomerce\*" -Recurse -Force
       shell: powershell
 
     - name: 🚀 Deploy to IIS folder (safe & fast)
