@@ -26,10 +26,12 @@ jobs:
     - name: 📦 Publish project
       run: dotnet publish -c Release -o ./publish
 
-    - name: 🔌 Stop IIS App Pool
+    - name: 🔌 Stop IIS App Pool (safe)
       run: |
         Import-Module WebAdministration
-        Stop-WebAppPool -Name "ecomerce"
+        if ((Get-WebAppPoolState -Name "ecomerce").Value -ne "Stopped") {
+          Stop-WebAppPool -Name "ecomerce"
+        }
       shell: powershell
 
     - name: 🛑 Stop IIS Site
