@@ -41,15 +41,11 @@ jobs:
         icacls "$folder\*" /grant "Everyone:F" /T /Q
       shell: powershell
 
-    - name: 🧹 Clean IIS deploy folder with cmd
-      run: |
-        rmdir /s /q "C:\inetpub\wwwroot\ecomerce"
-        mkdir "C:\inetpub\wwwroot\ecomerce"
-      shell: cmd
+   
 
-    - name: 🚀 Deploy to IIS folder
+    - name: 🚀 Deploy to IIS folder using robocopy
       run: |
-        xcopy ".\publish\*" "C:\inetpub\wwwroot\ecomerce\" /Y /E /I
+        robocopy ".\publish" "C:\inetpub\wwwroot\ecomerce" /MIR /NFL /NDL /NJH /NJS /nc /ns /np
       shell: cmd
 
     - name: ▶️ Start IIS site and App Pool
@@ -58,3 +54,7 @@ jobs:
         Start-WebAppPool -Name "ecomerce"
         Start-Website -Name "ecomerce"
       shell: powershell
+
+    - name: ✅ Check deployed version (اختياري)
+      run: type "C:\inetpub\wwwroot\ecomerce\wwwroot\version.txt"
+      shell: cmd
