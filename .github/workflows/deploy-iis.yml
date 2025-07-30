@@ -48,7 +48,9 @@ jobs:
       shell: powershell
 
     - name: 🚀 Deploy to IIS folder
-      run: robocopy ./publish "C:\inetpub\wwwroot\ecomerce" /E /NFL /NDL /NJH /NJS
+      run: |
+        robocopy ./publish "C:\inetpub\wwwroot\ecomerce" /E /NFL /NDL /NJH /NJS
+        exit 0
       shell: cmd
 
     - name: ▶️ Start IIS App Pool and Site
