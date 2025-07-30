@@ -2,7 +2,7 @@ name: 🚀 Deploy .NET app to IIS on Self-Hosted Runner
 
 on:
   push:
-    branches: [ main ] 
+    branches: [ main ]
 
 jobs:
   build-and-deploy:
@@ -26,23 +26,32 @@ jobs:
     - name: 📦 Publish project
       run: dotnet publish -c Release -o ./publish
 
-    - name: 🛑 Stop IIS site
+    - name: 🔌 Stop IIS App Pool
+      run: |
+        Import-Module WebAdministration
+        Stop-WebAppPool -Name "ecomerce"
+      shell: powershell
+
+    - name: 🛑 Stop IIS Site
       run: |
         Import-Module WebAdministration
         Stop-Website -Name "ecomerce"
       shell: powershell
 
-    - name: 🧹 Clean old files (contents only)
+    - name: 🧹 Take ownership and clean old files
       run: |
+        takeown /f "C:\inetpub\wwwroot\ecomerce" /r /d y
+        icacls "C:\inetpub\wwwroot\ecomerce" /grant "%USERNAME%:F" /t
         Get-ChildItem -Path "C:\inetpub\wwwroot\ecomerce" -Recurse | Remove-Item -Recurse -Force
       shell: powershell
 
     - name: 🚀 Deploy to IIS folder
-      run: robocopy ./publish "C:\inetpub\wwwroot\ecomerce" /E
+      run: robocopy ./publish "C:\inetpub\wwwroot\ecomerce" /E /NFL /NDL /NJH /NJS
       shell: cmd
 
-    - name: ▶️ Start IIS site
+    - name: ▶️ Start IIS App Pool and Site
       run: |
         Import-Module WebAdministration
+        Start-WebAppPool -Name "ecomerce"
         Start-Website -Name "ecomerce"
       shell: powershell
