@@ -26,11 +26,20 @@ jobs:
     - name: 📦 Publish project
       run: dotnet publish -c Release -o ./publish
 
-    - name: 🛑 Stop IIS site and App Pool
+    - name: 🛑 Stop IIS site and App Pool (safely)
       run: |
         Import-Module WebAdministration
-        Stop-Website -Name "ecomerce"
-        Stop-WebAppPool -Name "ecomerce"
+
+        $siteName = "ecomerce"
+        $appPoolName = "ecomerce"
+
+        if ((Get-Website -Name $siteName).state -ne "Stopped") {
+          Stop-Website -Name $siteName
+        }
+
+        if ((Get-WebAppPoolState -Name $appPoolName).Value -ne "Stopped") {
+          Stop-WebAppPool -Name $appPoolName
+        }
       shell: powershell
 
     - name: 🛠️ Take ownership and set permissions
@@ -41,7 +50,11 @@ jobs:
         icacls "$folder\*" /grant "Everyone:F" /T /Q
       shell: powershell
 
-   
+    - name: 🧹 Clean IIS deploy folder
+      run: |
+        rmdir /s /q "C:\inetpub\wwwroot\ecomerce"
+        mkdir "C:\inetpub\wwwroot\ecomerce"
+      shell: cmd
 
     - name: 🚀 Deploy to IIS folder using robocopy
       run: |
