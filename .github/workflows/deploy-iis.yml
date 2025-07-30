@@ -40,11 +40,13 @@ jobs:
         Stop-Website -Name "ecomerce"
       shell: powershell
 
-    - name: 🧹 Take ownership and clean old files
+    - name: 🧹 Take ownership and clean old files (skip locked files)
       run: |
         takeown /f "C:\inetpub\wwwroot\ecomerce" /r /d y
         icacls "C:\inetpub\wwwroot\ecomerce" /grant "bilanox\bilanox:F" /t
-        Get-ChildItem -Path "C:\inetpub\wwwroot\ecomerce" -Recurse | Remove-Item -Recurse -Force
+        Get-ChildItem -Path "C:\inetpub\wwwroot\ecomerce" -Recurse |
+          Where-Object { $_.FullName -ne "C:\inetpub\wwwroot\ecomerce\MvcDeployTest.dll" } |
+          Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
       shell: powershell
 
     - name: 🚀 Deploy to IIS folder
