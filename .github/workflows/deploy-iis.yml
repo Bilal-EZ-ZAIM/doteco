@@ -32,6 +32,11 @@ jobs:
         Stop-Website -Name "ecomerce"
       shell: powershell
 
+    - name: 🧹 Clean IIS deploy folder
+      run: |
+        Remove-Item -Path "C:\inetpub\wwwroot\ecomerce\*" -Recurse -Force
+      shell: powershell
+
     - name: 🛠️ Take ownership of IIS files
       run: |
         takeown /f "C:\inetpub\wwwroot\ecomerce\*" /r /d y
