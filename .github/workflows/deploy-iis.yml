@@ -72,6 +72,4 @@ jobs:
         Start-Website -Name "ecomerce"
       shell: powershell
 
-    - name: ✅ Check deployed version (اختياري)
-      run: type "C:\inetpub\wwwroot\ecomerce\wwwroot\version.txt"
-      shell: cmd
+  
