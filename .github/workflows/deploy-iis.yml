@@ -2,7 +2,7 @@ name: 🚀 Deploy .NET app to IIS on Self-Hosted Runner
 
 on:
   push:
-    branches: [ main ] # أو أي فرع تريد
+    branches: [ main ] 
 
 jobs:
   build-and-deploy:
@@ -15,7 +15,7 @@ jobs:
     - name: 🛠️ Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '9.0.302' 
+        dotnet-version: '9.0.302'
 
     - name: 🏗️ Restore dependencies
       run: dotnet restore
@@ -32,8 +32,13 @@ jobs:
         Stop-Website -Name "ecomerce"
       shell: powershell
 
-    - name: 🚀 Deploy to IIS folder (safe & fast)
-      run: robocopy ./publish "C:\inetpub\wwwroot\ecomerce" /E /XO /XN /XX /NJH /NJS /NP
+    - name: 🧹 Clean old files (contents only)
+      run: |
+        Get-ChildItem -Path "C:\inetpub\wwwroot\ecomerce" -Recurse | Remove-Item -Recurse -Force
+      shell: powershell
+
+    - name: 🚀 Deploy to IIS folder
+      run: robocopy ./publish "C:\inetpub\wwwroot\ecomerce" /E
       shell: cmd
 
     - name: ▶️ Start IIS site
