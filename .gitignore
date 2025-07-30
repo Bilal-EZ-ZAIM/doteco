@@ -1,0 +1,52 @@
+# Visual Studio files
+.vs/
+.vscode/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+
+# NuGet packages
+*.nupkg
+# The packages folder can be ignored because of restore
+packages/
+
+# Rider files
+.idea/
+
+# Logs
+*.log
+
+# ASP.NET Core publish output
+publish/
+
+# Dotnet tools
+*.dotCover
+
+# Runtime files
+*.runtimeconfig.json
+*.deps.json
+
+# Others
+*.dbmdl
+*.bak
+
+# IIS Express files
+iisexpress/
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user
+
+# JetBrains Rider
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
