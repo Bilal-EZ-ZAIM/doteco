@@ -26,10 +26,11 @@ jobs:
     - name: 📦 Publish project
       run: dotnet publish -c Release -o ./publish
 
-    - name: 🛑 Stop IIS site
+    - name: 🛑 Stop IIS site and App Pool
       run: |
         Import-Module WebAdministration
         Stop-Website -Name "ecomerce"
+        Stop-WebAppPool -Name "ecomerce"
       shell: powershell
 
     - name: 🛠️ Take ownership and set permissions
@@ -40,18 +41,20 @@ jobs:
         icacls "$folder\*" /grant "Everyone:F" /T /Q
       shell: powershell
 
-    - name: 🧹 Clean IIS deploy folder
+    - name: 🧹 Clean IIS deploy folder with cmd
       run: |
-        Get-ChildItem -Path "C:\inetpub\wwwroot\ecomerce" -Recurse | Remove-Item -Force -Recurse
-      shell: powershell
+        rmdir /s /q "C:\inetpub\wwwroot\ecomerce"
+        mkdir "C:\inetpub\wwwroot\ecomerce"
+      shell: cmd
 
     - name: 🚀 Deploy to IIS folder
       run: |
         xcopy ".\publish\*" "C:\inetpub\wwwroot\ecomerce\" /Y /E /I
       shell: cmd
 
-    - name: ▶️ Start IIS site
+    - name: ▶️ Start IIS site and App Pool
       run: |
         Import-Module WebAdministration
+        Start-WebAppPool -Name "ecomerce"
         Start-Website -Name "ecomerce"
       shell: powershell
