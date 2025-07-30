@@ -2,42 +2,42 @@ name: 🚀 Deploy .NET app to IIS on Self-Hosted Runner
 
 on:
   push:
-    branches: [ main ]  # سيتم تشغيل هذه العملية فقط عند حدوث push على الفرع الرئيسي
+    branches: [ main ] # أو أي فرع تريد
 
 jobs:
   build-and-deploy:
-    runs-on: self-hosted  # عملية البناء والنشر ستتم على جهاز خادم محلي (self-hosted runner)
+    runs-on: self-hosted
 
     steps:
     - name: 📥 Checkout code
-      uses: actions/checkout@v3  # هذه الخطوة تقوم بتحميل الكود من مستودع GitHub إلى الخادم الذي ينفذ الـ CI/CD
+      uses: actions/checkout@v3
 
     - name: 🛠️ Setup .NET
-      uses: actions/setup-dotnet@v3  # إعداد البيئة الخاصة بـ .NET باستخدام الإصدار المحدد
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '9.0.302'  # تحديد إصدار .NET المستخدم في عملية البناء
+        dotnet-version: '9.0.302' 
 
     - name: 🏗️ Restore dependencies
-      run: dotnet restore  # تحميل جميع الحزم والاعتمادات (dependencies) من ملف الـ .csproj أو الـ solution
+      run: dotnet restore
 
     - name: 🔨 Build project
-      run: dotnet build --configuration Release --no-restore  # بناء المشروع باستخدام إعدادات الإصدار، دون تكرار عملية الاستعادة
+      run: dotnet build --configuration Release --no-restore
 
     - name: 📦 Publish project
-      run: dotnet publish -c Release -o ./publish  # نشر المشروع إلى مجلد مؤقت يسمى "publish" للتهيئة النهائية للنشر
+      run: dotnet publish -c Release -o ./publish
 
     - name: 🛑 Stop IIS site
       run: |
-        Import-Module WebAdministration  # استيراد الوحدة الخاصة بـ IIS في PowerShell
-        Stop-Website -Name "ecomerce"  # إيقاف الموقع على IIS قبل استبدال الملفات
-      shell: powershell  # استخدام PowerShell لتنفيذ الأوامر
+        Import-Module WebAdministration
+        Stop-Website -Name "ecomerce"
+      shell: powershell
 
     - name: 🚀 Deploy to IIS folder (safe & fast)
-      run: robocopy ./publish "C:\inetpub\wwwroot\ecomerce" /E /XO /XN /XX /NJH /NJS /NP  # نسخ الملفات إلى مجلد IIS باستخدام robocopy
-      shell: cmd  # استخدام موجه الأوامر لتنفيذ هذا الأمر
+      run: robocopy ./publish "C:\inetpub\wwwroot\ecomerce" /E /XO /XN /XX /NJH /NJS /NP
+      shell: cmd
 
     - name: ▶️ Start IIS site
       run: |
-        Import-Module WebAdministration  # استيراد الوحدة الخاصة بـ IIS مرة أخرى لتشغيل الموقع
-        Start-Website -Name "ecomerce"  # إعادة تشغيل الموقع على IIS بعد استبدال الملفات
-      shell: powershell  # استخدام PowerShell لتنفيذ الأوامر
+        Import-Module WebAdministration
+        Start-Website -Name "ecomerce"
+      shell: powershell
