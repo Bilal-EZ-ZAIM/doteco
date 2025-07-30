@@ -32,7 +32,7 @@ jobs:
         Stop-Website -Name "ecomerce"
       shell: powershell
 
-    - name: 🛠️ Take ownership of files
+    - name: 🛠️ Take ownership of IIS files
       run: |
         takeown /f "C:\inetpub\wwwroot\ecomerce\*" /r /d y
         icacls "C:\inetpub\wwwroot\ecomerce\*" /grant "Everyone:F" /T
