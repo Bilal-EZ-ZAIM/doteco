@@ -1,13 +1,17 @@
 ﻿@{
     ViewData["Title"] = "Welcome to Bilal's Store";
 }
+
+<!-- Bootstrap CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <div class="container text-center mt-5">
-    <h1 class="display-4 mb-4">Welcome to Bilal's Storeddddd</h1>
-    <p class="lead mb-5">Discover the best products for your needs. Shop now and connect with us on social media!</p>
-    <a href="#" class="btn btn-primary btn-lg mb-4">Shop Now</a>
-    <div class="mt-4">
+    <h1 class="display-4 mb-4">Welcome to Bilal's Store</h1>
+    <p class="lead mb-4">Discover the best products for your needs. Shop now and connect with us on social media!</p>
+    <a href="/Products" class="btn btn-primary btn-lg mb-5">Shop Now</a>
+
+    <!-- Social Media -->
+    <div class="mt-4 mb-5">
         <h5>Follow us:</h5>
         <a href="https://facebook.com/" target="_blank" class="me-3">
             <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook" width="32" height="32">
@@ -21,5 +25,80 @@
         <a href="https://linkedin.com/" target="_blank">
             <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn" width="32" height="32">
         </a>
+    </div>
+
+    <!-- Featured Products -->
+    <div class="row mb-5">
+        <h2 class="mb-4">Featured Products</h2>
+        <div class="col-md-4">
+            <div class="card">
+                <img src="https://via.placeholder.com/300" class="card-img-top" alt="Product 1">
+                <div class="card-body">
+                    <h5 class="card-title">Product A</h5>
+                    <p class="card-text">Amazing product for your daily needs.</p>
+                    <a href="/Products/1" class="btn btn-outline-primary">View</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <img src="https://via.placeholder.com/300" class="card-img-top" alt="Product 2">
+                <div class="card-body">
+                    <h5 class="card-title">Product B</h5>
+                    <p class="card-text">High quality and affordable price.</p>
+                    <a href="/Products/2" class="btn btn-outline-primary">View</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <img src="https://via.placeholder.com/300" class="card-img-top" alt="Product 3">
+                <div class="card-body">
+                    <h5 class="card-title">Product C</h5>
+                    <p class="card-text">Trusted by hundreds of customers.</p>
+                    <a href="/Products/3" class="btn btn-outline-primary">View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonials -->
+    <div class="mb-5">
+        <h2 class="mb-4">What Our Customers Say</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <blockquote class="blockquote">
+                    <p>"Bilal's store changed my life! Amazing service and quality!"</p>
+                    <footer class="blockquote-footer">Sarah M.</footer>
+                </blockquote>
+            </div>
+            <div class="col-md-4">
+                <blockquote class="blockquote">
+                    <p>"Fast delivery, great prices. Highly recommended."</p>
+                    <footer class="blockquote-footer">Ahmed B.</footer>
+                </blockquote>
+            </div>
+            <div class="col-md-4">
+                <blockquote class="blockquote">
+                    <p>"The best online store experience I've had so far."</p>
+                    <footer class="blockquote-footer">Linda K.</footer>
+                </blockquote>
+            </div>
+        </div>
+    </div>
+
+    <!-- Google Maps Location -->
+    <div class="mb-5">
+        <h2 class="mb-3">Find Us</h2>
+        <div class="ratio ratio-16x9">
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.853157759862!2d-7.618765185229473!3d33.58988608072765!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xda7cdd5c9c3dfd3%3A0xf1cb7f8f87d0dc97!2sCasablanca!5e0!3m2!1sen!2sma!4v1620230192342!5m2!1sen!2sma" 
+                width="600" 
+                height="450" 
+                style="border:0;" 
+                allowfullscreen="" 
+                loading="lazy">
+            </iframe>
+        </div>
     </div>
 </div>
