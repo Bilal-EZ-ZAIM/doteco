@@ -1,29 +1,43 @@
-name: Build and Deploy ASP.NET Core to IIS
+name: 🚀 Deploy .NET app to IIS on Self-Hosted Runner
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ] 
 
 jobs:
   build-and-deploy:
     runs-on: self-hosted
 
     steps:
-    - name: ✅ Checkout repository
-      uses: actions/checkout@v4
+    - name: 📥 Checkout code
+      uses: actions/checkout@v3
 
-    - name: 🔧 Restore dependencies
+    - name: 🛠️ Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '9.0.302' 
+
+    - name: 🏗️ Restore dependencies
       run: dotnet restore
 
-    - name: 🛠️ Build solution
-      run: dotnet build --configuration Release
+    - name: 🔨 Build project
+      run: dotnet build --configuration Release --no-restore
 
     - name: 📦 Publish project
       run: dotnet publish -c Release -o ./publish
 
-    - name: 🚀 Deploy to IIS folder
-      run: robocopy ./publish "C:\inetpub\wwwroot\ecomerce" /MIR /NJH /NJS /NP
+    - name: 🛑 Stop IIS site
+      run: |
+        Import-Module WebAdministration
+        Stop-Website -Name "ecomerce"
+      shell: powershell
 
-    - name: 🔁 Restart IIS
-      run: iisreset
+    - name: 🚀 Deploy to IIS folder (safe & fast)
+      run: robocopy ./publish "C:\inetpub\wwwroot\ecomerce" /E /XO /XN /XX /NJH /NJS /NP
+      shell: cmd
+
+    - name: ▶️ Start IIS site
+      run: |
+        Import-Module WebAdministration
+        Start-Website -Name "ecomerce"
+      shell: powershell
