@@ -2,74 +2,42 @@ name: 🚀 Deploy .NET app to IIS on Self-Hosted Runner
 
 on:
   push:
-    branches: [ main ] 
+    branches: [ main ]  # سيتم تشغيل هذه العملية فقط عند حدوث push على الفرع الرئيسي
 
 jobs:
   build-and-deploy:
-    runs-on: self-hosted
+    runs-on: self-hosted  # عملية البناء والنشر ستتم على جهاز خادم محلي (self-hosted runner)
 
     steps:
     - name: 📥 Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v3  # هذه الخطوة تقوم بتحميل الكود من مستودع GitHub إلى الخادم الذي ينفذ الـ CI/CD
 
     - name: 🛠️ Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v3  # إعداد البيئة الخاصة بـ .NET باستخدام الإصدار المحدد
       with:
-        dotnet-version: '9.0.302' 
+        dotnet-version: '9.0.302'  # تحديد إصدار .NET المستخدم في عملية البناء
 
     - name: 🏗️ Restore dependencies
-      run: dotnet restore
+      run: dotnet restore  # تحميل جميع الحزم والاعتمادات (dependencies) من ملف الـ .csproj أو الـ solution
 
     - name: 🔨 Build project
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build --configuration Release --no-restore  # بناء المشروع باستخدام إعدادات الإصدار، دون تكرار عملية الاستعادة
 
     - name: 📦 Publish project
-      run: dotnet publish -c Release -o ./publish
+      run: dotnet publish -c Release -o ./publish  # نشر المشروع إلى مجلد مؤقت يسمى "publish" للتهيئة النهائية للنشر
 
-    - name: 🛑 Stop IIS site and App Pool (safely)
+    - name: 🛑 Stop IIS site
       run: |
-        Import-Module WebAdministration
+        Import-Module WebAdministration  # استيراد الوحدة الخاصة بـ IIS في PowerShell
+        Stop-Website -Name "ecomerce"  # إيقاف الموقع على IIS قبل استبدال الملفات
+      shell: powershell  # استخدام PowerShell لتنفيذ الأوامر
 
-        $siteName = "ecomerce"
-        $appPoolName = "ecomerce"
+    - name: 🚀 Deploy to IIS folder (safe & fast)
+      run: robocopy ./publish "C:\inetpub\wwwroot\ecomerce" /E /XO /XN /XX /NJH /NJS /NP  # نسخ الملفات إلى مجلد IIS باستخدام robocopy
+      shell: cmd  # استخدام موجه الأوامر لتنفيذ هذا الأمر
 
-        if ((Get-Website -Name $siteName).state -ne "Stopped") {
-          Stop-Website -Name $siteName
-        }
-
-        if ((Get-WebAppPoolState -Name $appPoolName).Value -ne "Stopped") {
-          Stop-WebAppPool -Name $appPoolName
-        }
-      shell: powershell
-
-    - name: 🛠️ Take ownership and set permissions
+    - name: ▶️ Start IIS site
       run: |
-        $folder = "C:\inetpub\wwwroot\ecomerce"
-        takeown /f "$folder\*" /r /d y
-        icacls "$folder" /grant "Everyone:(OI)(CI)F" /T /Q
-        icacls "$folder\*" /grant "Everyone:F" /T /Q
-      shell: powershell
-
-    - name: 🧹 Clean IIS deploy folder
-      run: |
-        rmdir /s /q "C:\inetpub\wwwroot\ecomerce"
-        mkdir "C:\inetpub\wwwroot\ecomerce"
-      shell: cmd
-
-    - name: 🚀 Deploy to IIS folder using robocopy
-      run: |
-        set SOURCE=%CD%\publish
-        set DEST=C:\inetpub\wwwroot\ecomerce
-        robocopy "%SOURCE%" "%DEST%" /E /PURGE /R:3 /W:5 /MT:8 /NFL /NDL /NP
-        if %ERRORLEVEL% LEQ 7 exit 0
-        exit 1
-      shell: cmd
-
-    - name: ▶️ Start IIS site and App Pool
-      run: |
-        Import-Module WebAdministration
-        Start-WebAppPool -Name "ecomerce"
-        Start-Website -Name "ecomerce"
-      shell: powershell
-
-  
+        Import-Module WebAdministration  # استيراد الوحدة الخاصة بـ IIS مرة أخرى لتشغيل الموقع
+        Start-Website -Name "ecomerce"  # إعادة تشغيل الموقع على IIS بعد استبدال الملفات
+      shell: powershell  # استخدام PowerShell لتنفيذ الأوامر
