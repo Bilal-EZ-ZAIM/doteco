@@ -58,7 +58,11 @@ jobs:
 
     - name: 🚀 Deploy to IIS folder using robocopy
       run: |
-        robocopy ".\publish" "C:\inetpub\wwwroot\ecomerce" /MIR /NFL /NDL /NJH /NJS /nc /ns /np
+        set SOURCE=%CD%\publish
+        set DEST=C:\inetpub\wwwroot\ecomerce
+        robocopy "%SOURCE%" "%DEST%" /E /PURGE /R:3 /W:5 /MT:8 /NFL /NDL /NP
+        if %ERRORLEVEL% LEQ 7 exit 0
+        exit 1
       shell: cmd
 
     - name: ▶️ Start IIS site and App Pool
