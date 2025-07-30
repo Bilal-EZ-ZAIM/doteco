@@ -31,6 +31,11 @@ jobs:
         Import-Module WebAdministration
         Stop-Website -Name "ecomerce"
       shell: powershell
+    - name: 🛠️ Grant permissions to IIS folder
+      run: |
+          icacls "C:\inetpub\wwwroot\ecomerce" /grant "Everyone:(OI)(CI)F" /T
+      shell: powershell
+      
 
     - name: 🧹 Remove old files from IIS folder
       run: |
